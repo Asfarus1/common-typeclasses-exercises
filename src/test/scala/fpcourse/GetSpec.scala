@@ -73,4 +73,7 @@ class GetSpec extends AnyFunSuite with Matchers with Configuration with FunSuite
    * TODO 12
    * Write discipline tests for instances of Monoid, Eq and MonadError.
    */
+  checkAll("Monoid[Get[Int]]", MonoidTests[Get[Int]].monoid)
+  checkAll("Eq[Get[Int]]", EqTests[Get[Int]].eqv)
+  checkAll("MonadError[Get, String]", MonadErrorTests[Get, String].monadError[Int, Int, Int])
 }
