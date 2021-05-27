@@ -111,10 +111,7 @@ object Get {
       bytes =>
         fa.run(bytes) match {
           case Left(msg) => msg.asLeft
-          case Right(a) => f(a._2).run(bytes) match {
-            case Left(msg) => msg.asLeft
-            case Right(a1) => (bytes, a1._2).asRight
-          }
+          case Right((leftBytes, v)) => f(v).run(leftBytes)
         }
     }
 
@@ -140,14 +137,10 @@ object Get {
     override def handleErrorWith[A](fa: Get[A])(f: String => Get[A]): Get[A] = Get[A] {
       bytes =>
         fa.run(bytes) match {
-          case Left(e) => f(e).run(bytes) match {
-            case Left(msg) => msg.asLeft
-            case Right(b) => (bytes, b._2).asRight[String]
-          }
-          case r => r
+          case Left(e) => f(e).run(bytes)
+          case r@Right(_) => r
         }
     }
-
   }
 
   /**
